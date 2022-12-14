@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html layout:decorate="~{base}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.ultraq.net.nz/thymeleaf/layout ">
+<head>
+    <title layout:fragment="title">Маркет — Профіль</title>
+</head>
+<body>
+<main class="container pt-3" layout:fragment="content">
+    <h1 class="title mb-3">Мій аккаунт</h1>
+    <form class="mb-4" method="post" th:action="@{/account/edit}" th:object="${user}">
+        <input th:field="*{id}" type="hidden"/>
+        <input th:field="*{email}" type="hidden"/>
+        <input th:field="*{role}" type="hidden"/>
+        <input th:field="*{password}" type="hidden"/>
+        <div class="mb-3">
+            <label class="form-label" for="firstName">Ім"я</label>
+            <input class="form-control mb-3" id="firstName" th:field="*{firstName}" type="text"/>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert"
+                 th:if="${#fields.hasErrors('firstName')}">
+                <span th:errors="*{firstName}">Error</span>
+                <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button"></button>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="lastName">Прізвище</label>
+            <input class="form-control mb-3" id="lastName" th:field="*{lastName}" type="text"/>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert"
+                 th:if="${#fields.hasErrors('lastName')}">
+                <span th:errors="*{lastName}">Error</span>
+                <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button"></button>
+            </div>
+        </div>
+        <button class="btn btn-success" type="submit">Save changes</button>
+    </form>
+    <div th:remove="tag" th:unless="${#lists.isEmpty(products)}">
+        <hr>
+        <div class="card mb-3" th:each="product: ${products}">
+            <div class="card-header fw-bold" th:text="${product.title}"></div>
+            <div class="card-body">
+                <p class="card-text" th:text="${product.description}"></p>
+                <p class="d-flex justify-content-between card-text">
+                    <small class="text-muted" th:text="${product.location}"></small>
+                    <small class="text-muted"
+                           th:text="${#numbers.formatDecimal(product.price, 1, 'DEFAULT', 2, 'DEFAULT') + ' ₴'}"></small>
+                </p>
+            </div>
+            <div class="card-footer">
+                <p class="d-flex justify-content-between card-text">
+                    <a class="btn btn-primary" th:href="@{/product/{id}/edit(id=${product.id})}">Edit</a>
+                    <a class="btn btn-danger" th:href="@{/product/{id}/delete(id=${product.id})}">Delete</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>
